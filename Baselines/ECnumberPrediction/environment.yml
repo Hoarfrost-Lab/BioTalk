@@ -1,0 +1,43 @@
+name: dna_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - ipykernel
+  - ipython
+  - jupyter_client
+  - jupyter_core
+  - libsodium
+  - openssl
+  - zeromq
+  - zlib
+  - tk
+  - sqlite
+  - readline
+  - ncurses
+  - libffi
+  - setuptools
+  - pip
+  - wheel
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - biopython
+  - pillow
+  - tornado
+  - pip:
+      - accelerate
+      - aiohttp
+      - datasets
+      - huggingface-hub
+      - transformers
+      - pyarrow
+      - tqdm
+      - scipy
+      - numpy
+      - pandas
+      - scikit-learn
+      - einops  
+
