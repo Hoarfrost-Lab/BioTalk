@@ -83,4 +83,16 @@ valid_df = pd.read_parquet('Benchmark-Datasets-Train+Valid/Benchmark-I/Valid.par
 print(train_df.head())
 print(valid_df.head())
 
+### Baselines
+
+#### Embeddings Quality Evaluation
+
+
+
+#### EC Number Prediction using DNA Embedding
+
+
+
+#### Multi-modal Zero- and Few-shot EC Number Predictions Using LLM Prompts
+
 ```
