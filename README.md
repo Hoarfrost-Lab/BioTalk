@@ -82,17 +82,32 @@ valid_df = pd.read_parquet('Benchmark-Datasets-Train+Valid/Benchmark-I/Valid.par
 # Display the first few rows
 print(train_df.head())
 print(valid_df.head())
+```
 
 ### Baselines
 
-#### Embeddings Quality Evaluation
+### Embeddings Quality Evaluation
 
+This section provides Python scripts (`scores.py` and `k-nn_retrievals.py`) that utilize pre-trained transformer models to evaluate the quality of DNA sequence embeddings and to perform retrieval tasks for the top-k nearest embeddings.
 
+**Repository Link:** [Embeddings Quality Evaluation](https://github.com/Hoarfrost-Lab/BioTalk/tree/main/Baselines/DNAembeddingQuality)
 
-#### EC Number Prediction using DNA Embedding
+### EC Number Prediction Using DNA Embedding
 
+We developed a two-layer classifier designed to predict Enzyme Commission (EC) numbers using various DNA embeddings, including DNABERT, Nucleotide Transformers, LOLBERT, and fine-tuned LOLBERT. This classifier was evaluated on two test datasets: test1 and test2.
 
+The optimal hyperparameters were determined after a cross-validation process on the validation dataset, resulting in a configuration of a batch size of 64, a hidden size of 256, and a learning with a rate of 0.001. The model was trained for a duration of 10 epochs.
 
-#### Multi-modal Zero- and Few-shot EC Number Predictions Using LLM Prompts
+**Repository Link:** [EC Number Prediction](https://github.com/Hoarfrost-Lab/BioTalk/tree/main/Baselines/ECnumberPrediction)
 
-```
+### Multi-modal Zero- and Few-shot EC Number Predictions Using LLM Prompts
+
+Our methodology exploits the multi-modal properties of our benchmark datasets by utilizing both DNA sequences and textual descriptions for EC number prediction. This is done using the open-access Llama 3 language model.
+
+- **Zero-shot Prediction:** For zero-shot prompting, we provide natural language instructions that clearly describe the prediction task and outline the expected output. This strategy allows the LLM to construct a refined context that improves the accuracy of predictions. 
+
+  **Code Repository:** [Zero-shot Prediction with Llama 3](https://github.com/Hoarfrost-Lab/BioTalk/blob/main/Baselines/MultimodalPrediction/llama3_zeroshot.ipynb)
+
+- **Few-shot Learning:** In this approach, we select examples from our training data, simplify the instructions, and include three-shot examples to aid in model learning.
+
+  **Code Repository:** [Few-shot Learning with Llama 3](https://github.com/Hoarfrost-Lab/BioTalk/blob/main/Baselines/MultimodalPrediction/llama3_fewshot.ipynb)
