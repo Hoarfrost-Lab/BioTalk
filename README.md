@@ -1,71 +1,73 @@
-<html>
-<style>
-      body {
-        font-family: Arial, sans-serif;
-        line-height: 1.3;
-        /* text-align: center; */
-        margin: 0;
-        padding: 0;
-        /* background-color: #f4f4f4; */
-      }
-      .container {
-        max-width: 1000px;
-        margin: 10px auto;
-        padding: 10px;
-        /* border-radius: 10px; */
-        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-        text-align: center;
-      }
-      .textcontainer {
-        max-width: 1000px;
-        margin: 10px auto;
-        padding: 15px;
-
-        text-align: justify;
-      }
-      .title {
-        font-size: 2.5em;
-        margin-bottom: 0.5em;
-      }
-      .description {
-        font-size: 1.7em;
-      }
-      .icons img {
-        width: 50px;
-        margin: 0 10px;
-        vertical-align: middle;
-      }
-      .icons {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-        color: #9A47D3;
-      }
-      .icons a {
-        text-align: center;
-        margin: 30px;
-        text-decoration: none;
-        color: inherit;
-      }
-      
-      .icons a:hover img {
-        filter: brightness(70%); /* Change color on hover */
-    }
-      .icons span {
-        display: block;
-        margin-top: 3px;
-      }
-      hr {
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-        border: 0;
-        border-top: 3px solid #12010d;
-    }
-</style>
-
-<body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.3;
+            /* text-align: center; */
+            margin: 0;
+            padding: 0;
+            /* background-color: #f4f4f4; */
+        }
+        .container {
+            max-width: 1000px;
+            margin: 10px auto;
+            padding: 10px;
+            /* border-radius: 10px; */
+            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+            text-align: center;
+        }
+        .textcontainer {
+            max-width: 1000px;
+            margin: 10px auto;
+            padding: 15px;
+            text-align: justify;
+        }
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+        }
+        .description {
+            font-size: 1.7em;
+        }
+        .icons img {
+            width: 50px;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+        .icons {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            color: #9A47D3;
+        }
+        .icons a {
+            text-align: center;
+            margin: 30px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .icons a:hover img {
+            filter: brightness(70%); /* Change color on hover */
+        }
+        .icons span {
+            display: block;
+            margin-top: 3px;
+        }
+        hr {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border: 0;
+            border-top: 3px solid #12010d;
+        }
+    </style>
+    </head>
+    <body>
     <div class="container">
       <div class="title">🧬 BioTalk 🗣️</div>
       <div class="description">
