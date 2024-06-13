@@ -1,0 +1,75 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "name": "BioTalk",
+  "description": "Predicting gene function from its DNA sequence is a fundamental challenge in biology. Many deep learning models have been proposed to embed DNA sequences and predict their enzymatic function, leveraging information in public databases linking DNA sequences to an enzymatic function label. However, much of the scientific community's knowledge of biological function is not represented in these categorical labels, and is instead captured in unstructured text descriptions of mechanisms, reactions, and enzyme behavior. These descriptions are often captured alongside DNA sequences in biological databases, albeit in an unstructured manner. Deep learning of models predicting enzymatic function are likely to benefit from incorporating this multi-modal data encoding scientific knowledge of biological function. There is, however,  no dataset designed for machine learning algorithms to leverage this multi-modal information. Here we propose a novel dataset and benchmark suite that enables the exploration and development of large multi-modal neural network models on gene DNA sequences and natural language descriptions of gene function. We present baseline performance on benchmarks for both unsupervised and supervised tasks that demonstrate the difficulty of this modeling objective, while demonstrating the potential benefit of incorporating multi-modal data types in function prediction compared to DNA sequences alone. ",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "citeAs": "@article{biotalk2024, title={A Benchmark Dataset for Multimodal Prediction of Enzymatic Function Coupling DNA Sequences and Natural Language},author={Yuchen Zhang and Ratish Kumar Chandrakant Jha and Soumya Bharadwaj and Vatsal Sanjaykumar Thakkar and Adrienne Hoarfrost and Jin Sun}, year={2024}}",
+  "url": "https://github.com/Hoarfrost-Lab/BioTalk",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "github-repository",
+      "name": "github-repository",
+      "description": "BioTalk repository on GitHub.",
+      "contentUrl": "https://github.com/Hoarfrost-Lab/BioTalk",
+      "encodingFormat": "git+https",
+      "sha256": "main"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "jsonl-files",
+      "name": "jsonl-files",
+      "description": "JSONL files are hosted on the GitHub repository.",
+      "containedIn": {
+        "@id": "github-repository"
+      },
+      "encodingFormat": "application/jsonlines",
+      "includes": "data/*.jsonl"
+    }
+  ]
+}
