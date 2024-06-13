@@ -425,4 +425,25 @@ class Dataset(torch.utils.data.Dataset):
             - 'labels': The label for the i-th sample (if applicable).
         """
         return {key: tensor[i] for key, tensor in self.encodings.items()}
+
+def encode_labels(labels):
+    """ Encodes hierarchical labels to unique integers. """
+    unique_labels = pd.Series(labels).unique()
+    label_to_int = {label: idx for idx, label in enumerate(unique_labels)}
+    return label_to_int
+
+def decode_labels(encoded_labels, label_to_int):
+    """ Decodes integers back to hierarchical labels. """
+    int_to_label = {idx: label for label, idx in label_to_int.items()}
+    return [int_to_label[idx] for idx in encoded_labels]
+
+# Example usage
+# labels = ["1.2.3.4", "1.2.3.5", "2.3.4.5"]
+# label_to_int = encode_labels(labels)
+# encoded_labels = [label_to_int[label] for label in labels]
+# print(encoded_labels)
+
+# Convert back
+#cdecoded_labels = decode_labels(encoded_labels, label_to_int)
+# print(decoded_labels)
     
