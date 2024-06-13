@@ -21,8 +21,8 @@ wget -b https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgeb
 gunzip -c uniprot_swissprot.tab.gz > uniprot_swissprot.tab &
 
 ## Intructions
-Generate dataset by following the functions in DatasetGeneration.ipynb. The final files generated will contain following columns: AC, EC, OC, UniRef100, UniRef90, UniRef50, EmblCdsId, Sequence
-Split the dataset and create four benchmark datasets by following the functions in DatasetSplitting.ipynb
+1. Generate dataset by following the functions in DatasetGeneration.ipynb. The final files generated will contain following columns: AC, EC, OC, UniRef100, UniRef90, UniRef50, EmblCdsId, Sequence
+2. Split the dataset and create four benchmark datasets by following the functions in DatasetSplitting.ipynb
 
 
 
