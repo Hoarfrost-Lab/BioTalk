@@ -9,11 +9,14 @@ The scripts rely on the following external libraries:
 - `torch`
 - `transformers`
 - `sklearn`
+- `numpy`
+- `pandas`
+- `faiss`
 
 These libraries can be installed using pip:
 
 ```
-pip install torch transformers sklearn
+pip install torch transformers sklearn pandas numpy faiss
 ```
 
 ## Pre-trained Models and Tokenizers
@@ -22,6 +25,9 @@ The scripts assume you have pre-trained transformer models and their correspondi
 
 ## Functionality
 
+The scripts utilize helper functions defined in a separate file utils/utils.py. These functions handle common tasks like data loading, tokenizer interaction, and embedding retrieval.
+
+The scripts leverage a custom tokenizer class named BioTokenizer. This tokenizer is specifically designed for processing DNA sequences and while overrides the tokenization method of the base RobertaTokenizer. 
 The scripts perform the following tasks:
 
 ### scores.py:
@@ -51,5 +57,8 @@ The scripts perform the following tasks:
 python scores.py
 python k-nn_retrievals.py
 ```
+
+
+
 
 These commands will execute the scripts and print the evaluation results (silhouette scores for scores.py and retrieval accuracy for k-nn_retrievals.py).
