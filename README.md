@@ -1,4 +1,4 @@
-
+<html>
 <style>
       body {
         font-family: Arial, sans-serif;
@@ -94,6 +94,7 @@
       </div>
     </div>
   </body>
+</html>
 
 # 
 accompanying website for NeurIPS Datasets &amp; Benchmarks Submission 2024
