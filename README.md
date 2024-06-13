@@ -2,7 +2,7 @@
 
 Welcome to the **BioTalk** repository! This dataset contains comprehensive data for predicting gene function from DNA sequences, accompanied by unstructured text descriptions. Below, you'll find all the information you need to understand and use this dataset.
 
-### Download
+## Download
 
 You can download the dataset directly from following Link: [Dataset](https://drive.google.com/drive/folders/1lDpdfMCbW5MSgWoo7ZeAlAUFWkpbegYs)
 
@@ -84,7 +84,7 @@ print(train_df.head())
 print(valid_df.head())
 ```
 
-### Baselines
+## Baselines
 
 ### Embeddings Quality Evaluation
 
