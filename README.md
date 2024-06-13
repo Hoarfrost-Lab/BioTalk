@@ -1,6 +1,6 @@
 # 🧬 BioTalk 🗣️ : A Benchmark Dataset for Multimodal Prediction of Enzymatic Function Coupling DNA Sequences and Natural Language
 
-Welcome to the **BioTalk** repository! This dataset contains comprehensive data for predicting gene function from DNA sequences, accompanied by unstructured text descriptions. Below, you'll find all the information you need to understand and use this dataset.
+Welcome to the BioTalk repository! 🎉 This dataset contains comprehensive data for predicting gene function from DNA sequences 🧬, accompanied by unstructured text descriptions 📝. Below, you'll find all the information you need to understand and use this dataset. 👇
 
 ## ⬇️ Download
 
