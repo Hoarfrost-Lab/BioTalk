@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import torch
 import os, csv, sys, glob
@@ -11,15 +12,38 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from BioTokenizer import BioTokenizer
 
 
-def overlap_score(neighbor_ec, true_ec):
-    """
-    This function calculates the overlap score between two EC numbers.
+def overlap_score(neighbor_ec: str, true_ec: str) -> tuple[int, int, int]:
+    """Calculates the overlap score between two Enzyme Commission (EC) numbers.
+
+    The overlap score is the number of levels (separated by periods) that match exactly
+    between the two EC numbers. This function can be useful for comparing the specificity
+    of EC numbers in enzyme classification.
+
     Args:
-        ec1 (str): The first EC number (e.g., "1.2.3.4").
-        ec2 (str): The second EC number (e.g., "1.2.3.5").
+        neighbor_ec (str): The first EC number (e.g., "1.2.3.4").
+        true_ec (str): The second EC number (e.g., "1.2.3.5").
+
     Returns:
-        int: The overlap score, which is the number of matching levels from the beginning.
+        tuple[int, int, int]: A tuple containing:
+            - overlap_score (int): The number of matching levels from the beginning.
+            - alpha (int): The length (number of levels) of the first EC number.
+            - beta (int): The length (number of levels) of the second EC number.
+
+    Examples:
+        >>> overlap_score("1.2.3.4", "1.2.3.5")
+        (3, 4, 4)
+
+         >>> overlap_score("1", "1.2")
+        (1, 1, 2)
+
+        >>> overlap_score("invalid_ec", "1.2.3")  # Raises ValueError
+        ValueError: Invalid EC number format.
     """
+    if not isinstance(neighbor_ec, str) or not '.' in neighbor_ec:
+        raise ValueError("Invalid EC number format.")
+    if not isinstance(true_ec, str) or not '.' in true_ec:
+        raise ValueError("Invalid EC number format.")
+    
     levels1 = neighbor_ec.split(".")
     levels2 = true_ec.split(".")
     alphaandbetabet = 0
@@ -32,15 +56,40 @@ def overlap_score(neighbor_ec, true_ec):
             break
     return alphaandbetabet, alpha, beta
 
-def hiclass_score_metrics(true_ecs, neighboring_ecs):
-    """
-    This function calculates the hierarchical precision (hP) for a set of predicted EC numbers.
+def hiclass_score_metrics(true_ecs: list[str], neighboring_ecs: list[list[str]]) -> tuple[float, float, float]:
+    """Calculates HiCLASS score metrics for a set of true EC numbers and their neighboring EC numbers.
+
+    The HiCLASS (Hierarchical Classification) score metrics are used to evaluate the
+    performance of classification algorithms in a hierarchical structure. In the context of
+    enzyme classification, these metrics assess how well predicted EC numbers (neighboring_ecs)
+    match the true EC numbers (true_ecs).
+
     Args:
-        true_ecs (list): A list of true EC numbers (e.g., ["1.2.3.4", "2.3.4.5"]).
-        neighboring_ecs (list): A list of predicted EC numbers, where each element is a list of k nearest neighbors (e.g., [["1.2.3.5", "2.1.4.3"], ["3.4.5.6", "2.3.4.1"]]).
+        true_ecs (list[str]): A list of true Enzyme Commission (EC) numbers (e.g., ["1.2.3.4", "5.6.7.8"]).
+        neighboring_ecs (list[list[str]]): A list of lists of neighboring EC numbers for each true EC number.
+            Each inner list contains candidate EC numbers predicted for the corresponding true EC number.
+
     Returns:
-        float: The average hierarchical precision across all predicted EC numbers. 
+        tuple[float, float, float]: A tuple containing the following HiCLASS score metrics:
+            - hP (float): HiCLASS precision, representing the proportion of correctly classified EC numbers.
+            - hR (float): HiCLASS recall, representing the completeness of classifications.
+            - hF (float): HiCLASS F1-score, the harmonic mean of precision and recall.
+
+    Raises:
+        ValueError: If the lengths of `true_ecs` and `neighboring_ecs` do not match,
+            indicating a mismatch between the number of true EC numbers and their corresponding neighboring EC numbers.
+
+    Examples:
+        >>> true_ecs = ["1.2.3.4", "5.6.7.8"]
+        >>> neighboring_ecs = [["1.2.3.4", "1.2.3.5"], ["5.6.7.7", "5.6.7.9"]]
+        >>> hP, hR, hF = hiclass_score_metrics(true_ecs, neighboring_ecs)
+        >>> print(f"HiCLASS precision (hP): {hP:.4f}")
+        >>> print(f"HiCLASS recall (hR): {hR:.4f}")
+        >>> print(f"HiCLASS F1-score (hF): {hF:.4f}")
     """
+    if len(true_ecs) != len(neighboring_ecs):
+        raise ValueError("Length mismatch between true_ecs and neighboring_ecs lists.")
+
     intersection = 0
     alpha = 0
     beta = 0
@@ -57,7 +106,24 @@ def hiclass_score_metrics(true_ecs, neighboring_ecs):
     hF = 2*hP*hR/(hP+hR)
     return  hP, hR, hF
 
-def level_accuracy(accuracies, ec , retrieved_ec):
+def level_accuracy(accuracies: dict[int, int], ec: str, retrieved_ec: str) -> dict[int, int]:
+    """Calculates accuracy at different levels of the Enzyme Commission (EC) number hierarchy.
+
+    This function updates a dictionary `accuracies` that tracks the number of correctly
+    retrieved EC numbers at each level (key) in the hierarchy. It iterates through the
+    levels in the `accuracies` dictionary and checks if the first `level` levels (inclusive)
+    of the true EC number (`ec`) match the corresponding levels of a retrieved EC number (`retrieved_ec`).
+
+    Args:
+        accuracies (dict[int, int]): A dictionary where keys are levels (integers) and
+            values are the number of correctly retrieved EC numbers at that level.
+        ec (str): The true EC number (e.g., "1.2.3.4").
+        retrieved_ec (str): A List of retrieved EC number to be compared against the true EC number.
+
+    Returns:
+        dict[int, int]: The updated `accuracies` dictionary with potentially incremented counts
+            for correctly retrieved EC numbers at different levels.
+    """
 #     print(ec, retrieved_ec)
     for level, accuracy in accuracies.items():
         for r_ec in retrieved_ec:
@@ -65,22 +131,36 @@ def level_accuracy(accuracies, ec , retrieved_ec):
                 accuracies[level] += 1
                 break
     return accuracies
-def top_k_retrieval(train_ec, test_ec, train_embeddings, test_embeddings):
-    print(f"train_ec={len(train_ec)}, test_ec={len(test_ec)}, train_embeddings={len(train_embeddings)}, test_embeddings={len(test_embeddings)}")
+
+
+def top_k_retrieval(train_ec: list[str], test_ec: list[str], train_embeddings: torch.Tensor, test_embeddings: torch.Tensor) -> dict[int, tuple[dict[int, float], tuple[float, float, float]]]:
     """
-    Performs top-k NN retrieval using RoBERTa encoder embeddings and evaluates
-    EC number consistency in top-k retrievals.
+    Performs top-k retrieval of EC numbers using Faiss and calculates accuracy and HiCLASS metrics.
+
+    This function retrieves the top-k nearest neighbors (most similar EC numbers) for
+    each EC number in the test set using Faiss for efficient nearest neighbor search.
+    It then calculates accuracy at different levels of the EC number hierarchy and
+    HiCLASS score metrics to evaluate the retrieval performance.
+
     Args:
-        model_name (str): Name of the RoBERTa model (e.g., 'roberta-base').
-        test_ec (list): List of known EC numbers of test batch.
-        train_seqs (list): List of sequences data for which to retrieve similar sequences.
-        test_seqs (list): List of sequences data against which retrivals are called.
-        k (int): Number of nearest neighbors to retrieve.
+        train_ec (list[str]): A list of true EC numbers in the training set.
+        test_ec (list[str]): A list of true EC numbers for which to retrieve neighbors.
+        train_embeddings (torch.Tensor): A tensor of embeddings for the training set EC numbers.
+            The tensor is expected to have dimensions (num_train_ec, embedding_dim).
+        test_embeddings (torch.Tensor): A tensor of embeddings for the test set EC numbers.
+            The tensor is expected to have dimensions (num_test_ec, embedding_dim).
+
     Returns:
-        tuple: (accuracy, retrieval_results)
-            - accuracy (float): Proportion of top-k retrievals with correct EC numbers.
-            - retrieval_results (list of lists): List of retrieved EC numbers for each text data point.
+        dict[int, tuple[dict[int, float], tuple[float, float, float]]]: A dictionary where keys are
+            k values (e.g., 1, 3, 5) and values are tuples containing:
+                - accuracies (dict[int, float]): A dictionary where keys are levels (integers)
+                    and values are the accuracy (proportion of correctly retrieved EC numbers)
+                    at that level.
+                - hiclass_metric (tuple[float, float, float]): A tuple containing HiCLASS score metrics
+                    (precision, recall, F1-score) for the top-k retrieval results.
     """
+    print(f"Data dimensions: train_ec={len(train_ec)}, test_ec={len(test_ec)}, "
+          f"train_embeddings={train_embeddings.size()}, test_embeddings={test_embeddings.size()}")
     results = {}
     index = faiss.IndexFlatL2(train_embeddings.size(1))  # Use L2 distance for cosine similarity
     index.add(train_embeddings.cpu().detach().numpy())  # Add embeddings to the index
@@ -103,7 +183,9 @@ def top_k_retrieval(train_ec, test_ec, train_embeddings, test_embeddings):
         hiclass_metric = hiclass_score_metrics(test_ec, retrieval_results)
         results[k] = accuracies, hiclass_metric
     return results
-def get_embedding_stats(embeddings):
+
+
+def get_embedding_stats(embeddings: torch.Tensor):
     """
     This function extracts class token embedding, minimum, maximum and average 
     for each sequence from the encoder outputs.
@@ -122,11 +204,29 @@ def get_embedding_stats(embeddings):
     avg_embeddings = torch.mean(embeddings, dim=-2) # torch.sum(attention_mask*embeddings, axis=-2)/torch.sum(attention_mask, axis=1)
     return class_token_embeddings, min_embeddings, max_embeddings, avg_embeddings
 
-def load_df(data_dir, file_prefix):
+def load_df(data_dir: str, file_prefix: str) -> pd.DataFrame:
+    """Loads dataframes from CSV files matching a specific prefix within a directory.
+
+    This function searches for CSV files with a given prefix (`file_prefix`)
+    within a specified directory (`data_dir`) and combines them into a single
+    pandas DataFrame.
+
+    Args:
+        data_dir (str): The directory path containing the CSV files.
+        file_prefix (str): The prefix of the CSV files to load (e.g., "train", "test").
+
+    Returns:
+        pd.DataFrame: A combined DataFrame containing data from all loaded CSV files.
+
+    Raises:
+        FileNotFoundError: If no files are found matching the specified prefix and directory.
+    """
     # data_dir = "/work/ah2lab/soumya/"
     file_ptrn = f"{file_prefix}*"
     all_files = glob.glob(f"{data_dir}/{file_ptrn}.csv")
-    print(all_files)
+    if not all_files:
+        raise FileNotFoundError(f"No files found matching pattern '{file_prefix}' in directory '{data_dir}'.")
+    print(f"Loading data from files: {all_files}")  # Informative message
     df= pd.DataFrame()   #load train and test separately
     for filename in all_files:
         temp_df = pd.read_csv(filename) #, usecols=['EC','Sequence']
@@ -140,7 +240,21 @@ def load_df(data_dir, file_prefix):
 #     return embeddings[:, 0, :], min_embeddings, max_embeddings, avg_embeddings
 
 
-def compute_cosine_similarity_in_chunks(embeddings, chunk_size=1000):
+def compute_cosine_similarity_in_chunks(embeddings: torch.Tensor, chunk_size=1000) -> torch.Tensor:
+    """Computes cosine similarity matrix for a large embedding tensor in chunks for memory efficiency.
+
+    This function calculates the pairwise cosine similarity between all rows (vectors)
+    in the input embedding tensor (`embeddings`). Due to memory constraints when dealing
+    with large datasets, the computation is performed in chunks to avoid loading the
+    entire matrix into memory at once.
+
+    Args:
+        embeddings (torch.Tensor): A 2D tensor of embeddings (num_embeddings x embedding_dim).
+        chunk_size (int, optional): The size of each chunk to process. Defaults to 1000.
+
+    Returns:
+        torch.Tensor: A 2D tensor of cosine similarities between all embedding pairs (num_embeddings x num_embeddings).
+    """
     n = embeddings.size(0)
     similarity_matrix = torch.zeros((n, n))
     for i in range(0, n, chunk_size):
@@ -153,7 +267,29 @@ def compute_cosine_similarity_in_chunks(embeddings, chunk_size=1000):
             similarity_matrix[i:end_i, j:end_j] = similarity_chunk.cpu()
     return similarity_matrix
 
-def get_embeddings(tokenizer, model, loader, device, train_sequences, batch_size):
+def get_embeddings(tokenizer, model, loader: torch.utils.data.DataLoader, device: torch.device, train_sequences: list[str], batch_size: int) -> torch.Tensor:
+    """
+    Extracts embeddings for a list of sequences using a pre-trained tokenizer and model.
+
+    This function takes a list of protein or DNA sequences (`train_sequences`), a tokenizer
+    (`tokenizer`), a pre-trained model (`model`), a data loader (`loader`), and the target device
+    (`device`) as input. It iterates through the data loader in batches, performs tokenization
+    and padding according to the tokenizer's configuration for the specific model type, and
+    extracts the relevant hidden state from the model's outputs to represent the embeddings.
+    The embeddings for all sequences are then concatenated and returned.
+
+    Args:
+        tokenizer : The tokenizer to be used for tokenization and padding.
+        model : The pre-trained model to extract embeddings from.
+        loader (torch.utils.data.DataLoader): The data loader for iterating through batches.
+        device (torch.device): The device (CPU or GPU) to use for computations.
+        train_sequences (list[str]): A list of protein or DNA sequences for which to extract embeddings.
+        batch_size (int): The batch size for processing sequences.
+
+    Returns:
+        torch.Tensor: A tensor of concatenated embeddings for all input sequences
+            (num_sequences x embedding_dim).
+    """
     if 'LOLBERT' in tokenizer.name_or_path or 'FinetunedModel' in tokenizer.name_or_path:
         train_batch = tokenizer(train_sequences, padding='max_length', truncation=True) #lolbert
     elif 'DNABERT' in tokenizer.name_or_path:
@@ -161,7 +297,6 @@ def get_embeddings(tokenizer, model, loader, device, train_sequences, batch_size
     else:
         train_batch = tokenizer.batch_encode_plus(train_sequences, max_length=128, return_tensors='pt', truncation=True, padding=True) #nuc
     
-
     train_encodings = {'input_ids': torch.tensor(train_batch['input_ids']), 'attention_mask': torch.tensor(train_batch['attention_mask'])} #, 'labels': torch.tensor(batch['input_ids'])
     train_dataset = Dataset(train_encodings)
     torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
@@ -185,7 +320,23 @@ def get_embeddings(tokenizer, model, loader, device, train_sequences, batch_size
     embeddings = torch.cat(embeddings, dim=0)
     return embeddings
 
-def dist_matrix_chunks(embeddings, chunk_size=1000):
+def dist_matrix_chunks(embeddings: np.ndarray, chunk_size=1000) -> np.ndarray:
+    """
+    Computes pairwise cosine distance matrix for a large embedding array in chunks for memory efficiency.
+
+    This function calculates the cosine distance between all pairs of rows (vectors)
+    in the input embedding array (`embeddings`). Due to memory constraints when dealing
+    with large datasets, the computation is performed in chunks to avoid loading the
+    entire matrix into memory at once.
+
+    Args:
+        embeddings (np.ndarray): A 2D NumPy array of embeddings (num_embeddings x embedding_dim).
+        chunk_size (int, optional): The size of each chunk to process. Defaults to 1000.
+
+    Returns:
+        np.ndarray: A 2D NumPy array of cosine distances between all embedding pairs (num_embeddings x num_embeddings).
+    """
+
     n = embeddings.shape[0]
     distance_matrix = np.zeros((n, n))
     for i in range(0, n, chunk_size):
@@ -199,7 +350,23 @@ def dist_matrix_chunks(embeddings, chunk_size=1000):
     return distance_matrix
 
 
-def load_tokenizer(model_name):
+def load_tokenizer(model_name: str) -> BioTokenizer:
+  """Loads a pre-trained tokenizer for protein or DNA sequences.
+
+    This function loads a tokenizer from the Transformers library based on the provided model name.
+    It's likely that the `BioTokenizer` class is a custom class that modifies the tokenization
+    behavior for your specific needs. The function retrieves the tokenizer from the `models` subdirectory
+    and sets the vocabulary tokens (CLS, SEP, PAD, etc.) based on pre-defined values.
+
+    **Note:** It's important to ensure that the `BioTokenizer` class appropriately handles the
+             intended tokenization and maps the provided vocabulary tokens to the model's requirements.
+
+    Args:
+        model_name (str): The name of the pre-trained model to load the tokenizer for (e.g., "genebert").
+
+    Returns:
+        transformers.AutoTokenizer: The loaded tokenizer for the specified model.
+    """
   tokenizer = BioTokenizer.from_pretrained(f"models/{model_name}", max_len=128) #genebert is of no use actually, since Biotokenizer class is overwritting tokenize function
   cls_token = "S"
   pad_token = "P"
@@ -221,13 +388,41 @@ def load_tokenizer(model_name):
   return tokenizer
 
 class Dataset(torch.utils.data.Dataset):
+    """
+    PyTorch Dataset class for protein or DNA sequence embeddings.
+
+    This class inherits from `torch.utils.data.Dataset` to represent a custom dataset
+    specifically designed for protein or DNA sequence embeddings. It stores the encoded
+    sequences (`encodings`) internally and provides methods to access them during data
+    loader iteration.
+
+    Args:
+        encodings (dict[str, torch.Tensor]): A dictionary containing pre-processed and encoded sequences.
+            The expected keys are:
+                - 'input_ids': A tensor of input token IDs.
+                - 'attention_mask': A tensor of attention masks.
+                (Optional)
+                - 'labels': A tensor of labels (if applicable).
+    """
     def __init__(self, encodings):
-        # store encodings internally
         self.encodings = encodings
     def __len__(self):
-        # return the number of samples
+        """
+        Returns the number of samples in the dataset.
+        This method overrides the default behavior of `__len__` to return the number of
+        sequences (samples) present in the `encodings` dictionary.
+        """
         return self.encodings['input_ids'].shape[0]
     def __getitem__(self, i):
-        # return dictionary of input_ids, attention_mask, and labels for index i
+        """
+        Retrieves a single sample from the dataset at the specified index.
+
+        This method overrides the default behavior of `__getitem__` to return a dictionary
+        containing the following tensors for the given index `i`:
+            - 'input_ids': The input token IDs for the i-th sample.
+            - 'attention_mask': The attention mask for the i-th sample.
+            (Optional)
+            - 'labels': The label for the i-th sample (if applicable).
+        """
         return {key: tensor[i] for key, tensor in self.encodings.items()}
     
