@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BioTalk</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.3;
+        margin: 0;
+        padding: 0;
+
+      }
+      .container {
+        max-width: 1000px;
+        margin: 10px auto;
+        padding: 10px;
+        /* border-radius: 10px; */
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+        text-align: center;
+      }
+      .textcontainer {
+        max-width: 1000px;
+        margin: 10px auto;
+        padding: 15px;
+
+        text-align: justify;
+      }
+      .title {
+        font-size: 2.5em;
+        margin-bottom: 0.5em;
+      }
+      .description {
+        font-size: 1.7em;
+        margin-bottom: 1em;
+      }
+      .contributors {
+        font-size: 1em;
+        margin-bottom: 1em;
+        font-weight: 500;
+      }
+      .contributors a{
+        font-size: 1.2em;
+        text-decoration: none;
+        color: #9A47D3;
+      }
+      a:hover{
+        filter: brightness(70%);
+      }
+      .icons img {
+        width: 50px;
+        margin: 0 10px;
+        vertical-align: middle;
+      }
+      .icons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        color: #9A47D3;
+      }
+      .icons a {
+        text-align: center;
+        margin: 30px;
+        text-decoration: none;
+        color: inherit;
+      }
+      
+      .icons a:hover img {
+        filter: brightness(70%); /* Change color on hover */
+    }
+      .icons span {
+        display: block;
+        margin-top: 3px;
+      }
+      hr {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border: 0;
+        border-top: 3px solid #12010d;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="title">🧬 BioTalk 🗣️</div>
+      <div class="description">
+        A Benchmark Dataset for Multimodal Prediction of Enzymatic Function
+        Coupling DNA Sequences and Natural Language
+      </div>
+      <div class="contributors">
+         <h4>
+          <a
+            href="https://scholar.google.com/citations?user=j9YXltYAAAAJ" target="_inline">
+            <nobr>Yuchen Zhang<sup>1,3</sup> </nobr>
+          </a> &emsp;
+          <a href="https://www.linkedin.com/in/ratish11" target="_inline">
+            <nobr>Ratish Kumar Chandrakant Jha<sup>1</sup
+                ><sup>*</sup></nobr>
+          </a> &emsp;
+          <a href="https://www.linkedin.com/in/soumyabharadwaj1304/" target="_inline">
+            <nobr>Soumya Bharadwaj<sup>1</sup><sup>*</sup></nobr>
+          </a> &emsp;
+          <a href="https://www.linkedin.com/in/vatsal-thakkar-880320161/" target="_inline">
+            <nobr>Vatsal Sanjaykumar Thakkar<sup>1</sup><sup>*</sup></nobr>
+          </a> &emsp;
+          <a href="https://www.hoarfrostlab.com/adrienne-bio" target="_inline">
+            <nobr>Adrienne Hoarfrost<sup>2,4</sup></nobr>
+          </a> &emsp;
+          <a href="https://jinsungit.github.io/" target="_inline">
+            <nobr>Jin Sun<sup>1,4</sup></nobr>
+          </a> &emsp;
+        </h4>
+        <p>
+          <sup>1</sup>School of Computing, <sup>2</sup>Department of Marine
+          Sciences, <sup>3</sup>Department of Epidemiology & Biostatistics,
+          <sup>4</sup>Institute for Artificial Intelligence
+        </p>
+        <p><b>The University of Georgia</b></p>
+        <p><sup>*</sup> Equal contribution.</p>
+      </div>
+      <div class="icons">
+        <a href="" target="_inline">
+          <img
+            src="https://img.icons8.com/ios/50/9A47D3/pdf-2--v1.png"
+            alt="Paper"
+          />
+          <span>Paper</span>
+        </a>
+        <a href="https://github.com/Hoarfrost-Lab/BioTalk" target="_inline">
+          <img src="https://img.icons8.com/ios/50/9A47D3/code.png" alt="Code" />
+          <span>Code</span>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1lDpdfMCbW5MSgWoo7ZeAlAUFWkpbegYs" target="_inline">
+          <img
+            src="https://img.icons8.com/ios-filled/50/9A47D3/database.png"
+            alt="Dataset"
+          />
+          <span>Dataset</span>
+        </a>
+      </div>
+    </div>
+    <div class="textcontainer">
+        <h3>Abstract</h3>
+        <hr />
+        <p>
+            Predicting gene function from its DNA sequence is a fundamental challenge in biology. 
+            Many deep learning models have been proposed to embed DNA sequences and predict their enzymatic function, 
+            leveraging information in public databases linking DNA sequences to an enzymatic function label. 
+            However, much of the scientific community’s knowledge of biological function is not represented in these categorical labels, 
+            and is instead captured in unstructured text descriptions of mechanisms, reactions, and enzyme behavior. 
+            These descriptions are often captured alongside DNA sequences in biological databases, albeit in an unstructured manner. 
+            Deep learning of models predicting enzymatic function are likely to benefit from incorporating this multi-modal data encoding scientific knowledge of biological function. There is, however, no dataset designed for machine learning algorithms to leverage this multi-modal information. Here we propose a novel dataset and benchmark suite that enables the exploration and development of large multi- modal neural network models on gene DNA sequences and natural language descriptions of gene function. We present baseline performance on benchmarks for both unsupervised and supervised tasks that demonstrate the difficulty of this modeling objective, while demonstrating the potential benefit of incorporating multi-modal data types in function prediction compared to DNA sequences alone. Our dataset is at https://hoarfrost-lab.github.io/BioTalk/.
+        </p>
+  </body>
+</html>
