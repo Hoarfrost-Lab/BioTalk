@@ -23,7 +23,7 @@ To get started with this project, follow these steps:
 
 ```python
 conda env create -f environment.yml
-conda activate ec-prediction
+conda activate dna_env
 ```
 3. **Run the Training Script:**
 
